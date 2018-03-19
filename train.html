@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<style type="text/css">
+	body {
+	margin:0;
+	background:url('bg.jpg') no-repeat left top;
+	background-size: 100% 100%;
+}
+canvas {
+	display:block;
+}
+
+
+	</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+</body>
+<script type="text/javascript" src='jquery.min.js'></script>
+<script type="text/javascript">
+	(function(){
+
+		Object.prototype.setRain = function(opts){
+
+			var arg1 = 10,arg2 = 10,arg3 = 0.8,rainW = 2;
+			if(opts.type == 'large'){
+				arg1 = 3,arg2 = 20,arg3 = 1.8,rainW = 3;
+			}
+			if(opts.type == 'medium'){
+				arg1 = 3,arg2 = 19,arg3 = 1.5,rainW = 2;
+			}
+
+
+			ctx = this.getContext('2d');
+
+			this.width = window.innerWidth;
+			this.height = window.innerHeight;
+
+			var lines = [], //所有雨滴的参数集合
+			clientW = arg1, //每个雨滴X轴的间距
+			colors = ['rgba(164,196,207,0.4)','rgba(164,186,207,0.4)','rgba(164,199,207,0.4)','rgba(164,225,207,0.4)'];
+			lineNumber = window.innerWidth/clientW; //共有多少个雨滴
+
+			//设置各个雨滴的参数
+			for(var i = 0; i < lineNumber; i++){
+				lines.push({
+					x      : clientW * i,
+					y      : Math.floor(Math.random()*window.innerHeight),
+					width  : rainW,
+					height : Math.floor(Math.random()*10+5),
+					angle  : rainW,
+					speed  : Math.random()*1,
+					color  : colors[Math.floor(Math.random()*4)], 
+					randomH: window.innerHeight-Math.random()*500,
+				})
+			}
+			function draw(){
+				//清除画布
+				ctx.clearRect(0,0,window.innerWidth,window.innerHeight);
+
+				for(var i = 0; i < lineNumber; i++){
+					// 绘制雨滴颜色
+					ctx.fillStyle = lines[i].color;
+					// 绘制雨滴
+			 		ctx.fillRect(lines[i].x, lines[i].y, lines[i].width, lines[i].height);
+			 		//下落效果
+			 		lines[i].y = lines[i].y + arg2;
+			 		//是否落到地面显示
+			 		if(lines[i].y > lines[i].randomH){
+
+			 			lines[i].y = lines[i].randomH;
+			 			lines[i].width = 0;
+			 			ctx.beginPath();
+			 			ctx.strokeStyle = lines[i].color;
+			 			ctx.shadowOffsetX = 0; // 阴影Y轴偏移
+						ctx.shadowOffsetY = 0; // 阴影X轴偏移
+						ctx.shadowColor = lines[i].color;
+						ctx.lineWidth=rainW/3;
+						ctx.shadowBlur = 14; // 模糊尺寸
+						ctx.arc(lines[i].x,lines[i].y,lines[i].angle,0,2*Math.PI);
+						lines[i].angle = lines[i].angle += arg3;
+						ctx.stroke();
+						if(lines[i].angle > 20){
+							lines[i].y = Math.floor(Math.random()*window.innerHeight);
+							lines[i].angle = 0;
+							lines[i].width = rainW;
+						}
+			 		} 
+
+				}
+
+				requestAnimationFrame(draw);
+
+			}
+
+			draw()
+		}
+
+ 		document.getElementById('c').setRain({
+ 			type : 'smail', //smail,medium,large
+ 		});
+	
+}());
+</script>
+</html>
