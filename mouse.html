@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>鼠标跟随动画</title>
+	<meta charset="utf-8">
+	<style type="text/css">
+		*{
+			margin:0;
+			padding:0;
+		}
+		.none{
+			display: none;
+		}
+	</style>
+</head>
+<body>
+	<canvas id="canvas"></canvas>
+	<div class="none">
+		<img src="image/q1.png">
+		<img src="image/q2.png">
+		<img src="image/q3.png">
+		<img src="image/q4.png">
+		<img src="image/q5.png">
+		<img src="image/q6.png">
+		<img src="image/q8.png">
+		<img src="image/q9.png">
+		<img src="image/xin1.png">
+		<img src="image/xin2.png">
+		<img src="image/xin3.png">
+		<img src="image/xin4.png">
+	</div>
+</body>
+<script type="text/javascript">
+	var canvas = document.getElementById('canvas');
+	var ctx = canvas.getContext('2d');
+
+	canvas.width = window.innerWidth;
+	canvas.height = window.innerHeight;
+
+	var clientX,clientY,img,range = 5,speed = 2,star,stars,opacity;
+
+	canvas.onclick = function(e){
+
+		clientX = e.clientX,
+		clientY = e.clientY,
+		imgSrc = ['q1.png','q2.png','q3.png','q4.png','q5.png','q6.png','q8.png','q9.png'],
+		imgSrc2 = ['xin1.png','xin2.png','xin3.png','xin4.png'],
+		opacity = 1,
+		// 正方形
+		stars = [
+		[
+			{x : clientX,y : clientY-range,speedX : 0,speedY : -speed,src : imgSrc[Math.floor(Math.random()*imgSrc.length)]},
+			{x : clientX+Math.sqrt(range*range),y : clientY-Math.sqrt(range*range),speedX : speed*Math.sqrt(2),speedY : -speed*Math.sqrt(2),src : imgSrc[Math.floor(Math.random()*imgSrc.length)]},
+			{x : clientX+range,y : clientY,speedX : speed,speedY : 0,src : imgSrc[Math.floor(Math.random()*imgSrc.length)]},
+			{x : clientX+Math.sqrt(range*range),y : clientY+Math.sqrt(range*range),speedX : speed*Math.sqrt(2),speedY : speed*Math.sqrt(2),src : imgSrc[Math.floor(Math.random()*imgSrc.length)]},
+			{x : clientX,y : clientY+range,speedX : 0,speedY : speed,src : imgSrc[Math.floor(Math.random()*imgSrc.length)]},
+			{x : clientX-Math.sqrt(range*range),y : clientY+Math.sqrt(range*range),speedX : -speed*Math.sqrt(2),speedY : speed*Math.sqrt(2),src : imgSrc[Math.floor(Math.random()*imgSrc.length)]},
+			{x : clientX-range,y : clientY,speedX : -speed,speedY : 0,src : imgSrc[Math.floor(Math.random()*imgSrc.length)]},
+			{x : clientX-Math.sqrt(range*range),y : clientY-Math.sqrt(range*range),speedX : -speed*Math.sqrt(2),speedY : -speed*Math.sqrt(2),src : imgSrc[Math.floor(Math.random()*imgSrc.length)]},
+		],
+		[
+			{x : clientX,y : clientY-range,speedX : 0,speedY : -speed,src : imgSrc[Math.floor(Math.random()*imgSrc.length)]},
+			{x : clientX+Math.sqrt(range*range),y : clientY-Math.sqrt(range*range),speedX : speed/Math.sqrt(2),speedY : -speed/Math.sqrt(2),src : imgSrc[Math.floor(Math.random()*imgSrc.length)]},
+			{x : clientX+range,y : clientY,speedX : speed,speedY : 0,src : imgSrc[Math.floor(Math.random()*imgSrc.length)]},
+			{x : clientX+Math.sqrt(range*range),y : clientY+Math.sqrt(range*range),speedX : speed/Math.sqrt(2),speedY : speed/Math.sqrt(2),src : imgSrc[Math.floor(Math.random()*imgSrc.length)]},
+			{x : clientX,y : clientY+range,speedX : 0,speedY : speed,src : imgSrc[Math.floor(Math.random()*imgSrc.length)]},
+			{x : clientX-Math.sqrt(range*range),y : clientY+Math.sqrt(range*range),speedX : -speed/Math.sqrt(2),speedY : speed/Math.sqrt(2),src : imgSrc[Math.floor(Math.random()*imgSrc.length)]},
+			{x : clientX-range,y : clientY,speedX : -speed,speedY : 0,src : imgSrc[Math.floor(Math.random()*imgSrc.length)]},
+			{x : clientX-Math.sqrt(range*range),y : clientY-Math.sqrt(range*range),speedX : -speed/Math.sqrt(2),speedY : -speed/Math.sqrt(2),src : imgSrc[Math.floor(Math.random()*imgSrc.length)]},
+		],
+		[
+			{x : clientX,y : clientY-range,speedX : 0,speedY : -speed,src : imgSrc2[Math.floor(Math.random()*imgSrc2.length)]},
+			{x : clientX+range/Math.sqrt(2),y : clientY-range/Math.sqrt(2),speedX : speed/Math.sqrt(2),speedY : -speed/Math.sqrt(2),src : imgSrc2[Math.floor(Math.random()*imgSrc2.length)]},
+			{x : clientX+range,y : clientY,speedX : speed,speedY : 0,src : imgSrc2[Math.floor(Math.random()*imgSrc2.length)]},
+			{x : clientX+range/Math.sqrt(2),y : clientY+range/Math.sqrt(2),speedX : speed/Math.sqrt(2),speedY : speed/Math.sqrt(2),src : imgSrc2[Math.floor(Math.random()*imgSrc2.length)]},
+			{x : clientX,y : clientY+range,speedX : 0,speedY : speed,src : imgSrc2[Math.floor(Math.random()*imgSrc2.length)]},
+			{x : clientX-range/Math.sqrt(2),y : clientY+range/Math.sqrt(2),speedX : -speed/Math.sqrt(2),speedY : speed/Math.sqrt(2),src : imgSrc2[Math.floor(Math.random()*imgSrc2.length)]},
+			{x : clientX-range,y : clientY,speedX : -speed,speedY : 0,src : imgSrc2[Math.floor(Math.random()*imgSrc2.length)]},
+			{x : clientX-range/Math.sqrt(2),y : clientY-range/Math.sqrt(2),speedX : -speed/Math.sqrt(2),speedY : -speed/Math.sqrt(2),src : imgSrc2[Math.floor(Math.random()*imgSrc2.length)]},
+		]
+		];
+		star = stars[Math.floor(Math.random()*stars.length)];
+
+
+		draw();
+	}
+
+	var draw = function(){
+		ctx.clearRect(0,0,canvas.width,canvas.height);
+		opacity -= 0.02;
+		for(var i = 0; i < star.length;i++){
+			var img = new Image();
+			ctx.globalAlpha = opacity;
+			img.src = 'image/'+star[i].src;
+			ctx.drawImage(img,star[i].x,star[i].y,range*4,range*4);
+			star[i].x += star[i].speedX;
+			star[i].y += star[i].speedY;
+		}
+		if(opacity >= 0 ){
+			window.requestAnimationFrame(draw);
+		}
+	}	
+</script>
+</html>
